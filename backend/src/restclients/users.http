@@ -1,0 +1,57 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoY2Q2dGswMDAydXZvOGRjZDE1dDVlIiwiZW1haWwiOiJhZGFtc2pveTQwOUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1MTIwMzQ3NywiZXhwIjoxNzUxMjg5ODc3fQ.LEjKV5yqbxE1cEi-xTZeVyVEQPCaOajDcX4XsfMzcO8
+@userId = cmchcd6tk0002uvo8dcd15t5e
+
+### 1. Create a new user (Super Admin only)
+POST {{baseUrl}}/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "password": "SecurePass123!",
+  "firstName": "Mary",
+  "lastName": "Kimeria",
+  "role": "USER"
+}
+
+### 2. Get all users (Admin/Super Admin)
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+### 3. Get a user by ID (Admin/Super Admin)
+GET {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{token}}
+
+### 4. Update a user by Admin/Super Admin (restricted fields only)
+PATCH {{baseUrl}}/users/admin-update/{{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "phone": "+254712345678"
+}
+
+### 5. Delete a user (Super Admin only)
+DELETE {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{token}}
+
+### 6. Get current user's profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+
+### 7. Update current user's profile (customer)
+PATCH {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Adams",
+  "lastName": "Joy",
+  "phone": "+254798000000",
+  "avatarUrl": "https://example.com/avatar.jpg"
+}
+
+### 8. Get current user's rental history
+GET {{baseUrl}}/users/me/rentals
+Authorization: Bearer {{token}}
