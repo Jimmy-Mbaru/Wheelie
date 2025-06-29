@@ -5,6 +5,9 @@ import {
   IsBoolean,
   IsOptional,
   IsUrl,
+  IsInt,
+  Min,
+  Max,
 } from 'class-validator';
 import {
   VehicleCategory,
@@ -22,41 +25,52 @@ export class CreateVehicleDto {
   @IsString()
   model: string;
 
-  @ApiProperty({ example: 2022 })
-  @IsNumber()
+  @ApiProperty({ example: 2022, minimum: 1900, maximum: 2030 })
+  @IsInt()
+  @Min(1900)
+  @Max(2030)
   year: number;
 
-  @ApiProperty({ enum: VehicleCategory })
+  @ApiProperty({ enum: VehicleCategory, example: VehicleCategory.SEDAN })
   @IsEnum(VehicleCategory)
   category: VehicleCategory;
 
-  @ApiProperty({ enum: FuelType })
+  @ApiProperty({ enum: FuelType, example: FuelType.PETROL })
   @IsEnum(FuelType)
   fuelType: FuelType;
 
-  @ApiProperty({ enum: TransmissionType })
+  @ApiProperty({ enum: TransmissionType, example: TransmissionType.AUTOMATIC })
   @IsEnum(TransmissionType)
   transmission: TransmissionType;
 
-  @ApiProperty({ example: 5 })
-  @IsNumber()
+  @ApiProperty({ example: 5, minimum: 1, maximum: 50 })
+  @IsInt()
+  @Min(1)
+  @Max(50)
   seats: number;
 
-  @ApiProperty({ example: 4000 })
-  @IsNumber()
+  @ApiProperty({ example: 4000.00, minimum: 0 })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
   pricePerDay: number;
 
-  @ApiProperty({ example: true, required: false })
+  @ApiProperty({ example: true, required: false, default: true })
   @IsBoolean()
   @IsOptional()
   isAvailable?: boolean;
 
-  @ApiProperty({ example: 'Comfortable, fuel-efficient vehicle.', required: false })
+  @ApiProperty({ 
+    example: 'Comfortable, fuel-efficient vehicle perfect for city driving.', 
+    required: false 
+  })
   @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ example: 'https://example.com/car.jpg', required: false })
+  @ApiProperty({ 
+    example: 'https://example.com/vehicles/toyota-corolla.jpg', 
+    required: false 
+  })
   @IsUrl()
   @IsOptional()
   imageUrl?: string;
@@ -65,8 +79,9 @@ export class CreateVehicleDto {
   @IsString()
   licensePlate: string;
 
-  @ApiProperty({ example: 90000, required: false })
-  @IsNumber()
+  @ApiProperty({ example: 95000, required: false, minimum: 0 })
+  @IsInt()
+  @Min(0)
   @IsOptional()
   mileage?: number;
 

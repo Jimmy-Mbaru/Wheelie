@@ -32,4 +32,19 @@ export class UpdateUserDto {
   @IsOptional()
   @IsEnum(UserRole, { message: 'Invalid role' })
   role?: UserRole;
+
+  @ApiPropertyOptional({ example: 'Male' })
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @ApiPropertyOptional({ example: 'Kenya' })
+  @IsOptional()
+  @IsString()
+  country?: string;
+
+  @ApiPropertyOptional({ example: 'paypal@example.com' })
+  @IsOptional()
+  @IsEmail()
+  paypalEmail?: string;
 }

@@ -49,12 +49,16 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('admin-update/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Update user by ID (Admin/Super Admin only)' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  @ApiOperation({ summary: 'Update user by ID (Super Admin/Admin — restricted)' })
+  updateByAdmin(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req
+  ) {
+    return this.usersService.update(id, updateUserDto, req.user);
   }
 
   @Delete(':id')
@@ -65,16 +69,14 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  
-  @Get(':id')
+  @Get('profile')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get profile of current logged-in user' })
   getProfile(@Req() req) {
     return this.usersService.getProfile(req.user.sub);
   }
 
-  
-  @Patch(':id')
+  @Patch('profile')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update profile of current logged-in user' })
   updateProfile(@Req() req, @Body() updateUserDto: UpdateUserDto) {

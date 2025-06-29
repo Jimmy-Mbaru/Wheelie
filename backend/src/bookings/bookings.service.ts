@@ -34,7 +34,10 @@ export class BookingsService {
     // 2. Create booking
     const booking = await this.prisma.booking.create({
       data: {
-        ...dto,
+        vehicleId: dto.vehicleId,
+        startDate: dto.startDate,
+        endDate: dto.endDate,
+        totalAmount: dto.totalAmount,
         userId,
       },
       include: {
@@ -51,7 +54,6 @@ export class BookingsService {
       dto.startDate.toString(),
       dto.endDate.toString(),
     );
-
 
     return booking;
   }

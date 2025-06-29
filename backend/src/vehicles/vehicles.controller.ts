@@ -38,7 +38,9 @@ export class VehiclesController {
     return this.vehiclesService.create(createVehicleDto);
   }
 
-  @Get()
+
+
+  @Get('filter')
   @ApiOperation({ summary: 'List all vehicles (filterable)' })
   @ApiQuery({ name: 'category', required: false })
   @ApiQuery({ name: 'make', required: false })

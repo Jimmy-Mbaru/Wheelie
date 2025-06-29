@@ -50,16 +50,13 @@ export class AuthService {
     firstName: string;
     lastName: string;
   }) {
-    const hashedPassword = await bcrypt.hash(createAuthDto.password, 10);
-    const newUser = await this.usersService.create({
-      ...createAuthDto,
-      password: hashedPassword,
-    });
+    const newUser = await this.usersService.create(createAuthDto);
+
 
     // Send Welcome Email
     await this.mailerService.sendWelcomeEmail(
-      newUser.email,
-      newUser.firstName
+      newUser.email!,
+      newUser.firstName!
     );
 
 

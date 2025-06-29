@@ -1,11 +1,7 @@
-import { IsString, IsDateString, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsDateString, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBookingDto {
-  @ApiProperty({ example: 'clzvuv4tn0000hdzygb34sfm1' })
-  @IsString()
-  userId: string;
-
   @ApiProperty({ example: 'clzvuv5le0001hdzy9znf9xlo' })
   @IsString()
   vehicleId: string;
@@ -21,9 +17,4 @@ export class CreateBookingDto {
   @ApiProperty({ example: 5000 })
   @IsNumber()
   totalAmount: number;
-
-  @ApiProperty({ example: 'SUMMER2025', required: false })
-  @IsOptional()
-  @IsString()
-  couponId?: string;
 }

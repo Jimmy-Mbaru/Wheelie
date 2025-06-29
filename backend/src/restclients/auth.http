@@ -1,0 +1,202 @@
+@baseUrl = http://localhost:3000
+
+### Variables for testing
+@testEmail = adamsjoy409@gmail.com
+@testPassword = adamsjoy409@gmail.com
+@testName = Adams Joy
+
+@superAdminToken = 
+
+
+###
+### 1. Register a new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}",
+  "password": "{{testPassword}}",
+  "firstName": "Adams",
+  "lastName": "Joy"
+}
+
+
+
+###
+### 2. Register with invalid data (should return 400)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "123"
+}
+
+###
+### 3. Login with valid credentials
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}",
+  "password": "{{testPassword}}"
+}
+
+###
+### 4. Login with invalid credentials (should return 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}",
+  "password": "wrongpassword"
+}
+
+###
+### 5. Login with missing email
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "password": "{{testPassword}}"
+}
+
+###
+### 6. Forgot password with valid email
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}"
+}
+
+###
+### 7. Forgot password with invalid email format
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "invalid-email"
+}
+
+###
+### 8. Forgot password with missing email (should return 400)
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+}
+
+###
+### 9. Reset password with valid token
+### Note: Replace 'sample-reset-token' with actual token from forgot-password response
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "sample-reset-token",
+  "newPassword": "newpassword123"
+}
+
+###
+### 10. Reset password with missing token (should return 400)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "newPassword": "newpassword123"
+}
+
+###
+### 11. Reset password with missing newPassword (should return 400)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "sample-reset-token"
+}
+
+###
+### 12. Reset password with short password
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "sample-reset-token",
+  "newPassword": "123"
+}
+
+###
+### 13. Reset password with invalid token (should return 400)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "invalid-token",
+  "newPassword": "newpassword123"
+}
+
+###
+### 14. Test login after password reset
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}",
+  "password": "newpassword123"
+}
+
+###
+### Additional test cases with different user data
+###
+
+### 15. Register another user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "user2@example.com",
+  "password": "password456",
+  "name": "Second User"
+}
+
+###
+### 16. Test duplicate registration (should fail)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}",
+  "password": "{{testPassword}}",
+  "name": "{{testName}}"
+}
+
+###
+### 17. Forgot password for non-existent user
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com"
+}
+###
+### 18. Super Admin creates an Admin user
+POST {{baseUrl}}/users
+Authorization: Bearer {{superAdminToken}}
+Content-Type: application/json
+
+{
+  "email": "kimeriajames40@gmail.com",
+  "password": "kimeriajames40@gmail.com",
+  "firstName": "Cole",
+  "lastName": "Palmer",
+  "role": "ADMIN"
+}
+### 19. Admin Login with valid credentials
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "kimeriajames40@gmail.com",
+  "password": "kimeriajames40@gmail.com"
+}

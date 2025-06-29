@@ -2,19 +2,19 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserRole } from 'generated/prisma';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-  // Enforce only SUPER_ADMIN can assign ADMIN or SUPER_ADMIN roles
   async create(createUserDto: CreateUserDto, currentUser?: User): Promise<User> {
-    // If the current user is not a super admin and attempts to assign elevated roles
     if (
       createUserDto.role &&
       ['ADMIN', 'SUPER_ADMIN'].includes(createUserDto.role as string) &&
@@ -25,10 +25,17 @@ export class UsersService {
       );
     }
 
+    if (!createUserDto.password) {
+      throw new BadRequestException('Password is required');
+    }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
     return await this.prisma.user.create({
       data: {
         ...createUserDto,
-        role: createUserDto.role || UserRole.USER, // fallback to USER
+        password: hashedPassword,
+        role: createUserDto.role || UserRole.USER,
       },
     });
   }
@@ -68,13 +75,21 @@ export class UsersService {
     });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    await this.findOne(id);
+  async update(id: string, updateUserDto: UpdateUserDto, currentUser: User): Promise<User> {
+    const userToUpdate = await this.findOne(id);
+
+    if (id !== currentUser.id) {
+      throw new ForbiddenException('You can only update your own profile');
+    }
 
     return await this.prisma.user.update({
       where: { id },
       data: updateUserDto,
     });
+  }
+
+  async updateProfile(userId: string, updateDto: UpdateUserDto): Promise<User> {
+    return this.update(userId, updateDto, { id: userId } as User);
   }
 
   async remove(id: string): Promise<User> {
@@ -85,29 +100,23 @@ export class UsersService {
     });
   }
 
-  // Get current user profile (/users/me)
   async getProfile(userId: string): Promise<User> {
-    return this.findOne(userId);
-  }
-
-  // Update current user profile (/users/me PATCH)
-  async updateProfile(userId: string, updateDto: UpdateUserDto): Promise<User> {
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: updateDto,
-    });
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    return user;
   }
 
   async getRentalHistory(userId: string) {
     return this.prisma.booking.findMany({
       where: { userId },
       include: {
-        vehicle: true, // Includes details about the booked car
+        vehicle: true,
       },
       orderBy: {
-        startDate: 'desc', // Optional: show latest bookings first
+        startDate: 'desc',
       },
     });
   }
-
 }

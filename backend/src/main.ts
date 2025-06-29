@@ -10,7 +10,16 @@ async function bootstrap() {
     .setTitle('Car Rental API')
     .setDescription('The backend API for Car Rental platform')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

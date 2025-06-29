@@ -1,0 +1,173 @@
+### Variables
+@baseUrl = http://localhost:3000
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoY2Q2dGswMDAydXZvOGRjZDE1dDVlIiwiZW1haWwiOiJhZGFtc2pveTQwOUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1MTIwMDcwNywiZXhwIjoxNzUxMjg3MTA3fQ.nHVQ_TSgAlyA7J18CDRHo8PPlfmLzqNB6CPdhSWu3PQ
+@adminToken = 
+
+### 1. Create a new vehicle (Admin only)
+POST {{baseUrl}}/vehicles
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "make": "Porsche",
+  "model": "Cayene",
+  "year": 2020,
+  "category": "SUV",
+  "seats" : 5,
+  "licensePlate": "DDG-069",
+  "location": "Naivasha",
+  "pricePerDay": 5000,
+  "isAvailable": true,
+  "description": "Comfortable SUV perfect for city driving",
+  "features": ["Air Conditioning", "GPS", "Bluetooth"],
+  "fuelType": "DIESEL",
+  "transmission": "MANUAL"
+}
+
+### 2. Get all vehicles (no filters)
+GET {{baseUrl}}/vehicles/filter
+
+### 3. Get vehicles filtered by category
+GET {{baseUrl}}/vehicles/filter?category=SUV
+
+### 4. Get vehicles filtered by make
+GET {{baseUrl}}/vehicles/filter?make=FORD
+
+### 5. Get vehicles filtered by location
+GET {{baseUrl}}/vehicles/filter?location=Nairobi
+
+### 6. Get available vehicles only
+GET {{baseUrl}}/vehicles/filter?isAvailable=true
+
+### 7. Get vehicles with multiple filters
+GET {{baseUrl}}/vehicles/filter?category=SUV&location=Nairobi&isAvailable=true
+
+### 8. Get vehicles by make and availability
+GET {{baseUrl}}/vehicles/filter?make=Toyota&isAvailable=false
+
+### 9. Get vehicle by ID
+GET {{baseUrl}}/vehicles/cmcgqzrjj0002uvxc6skv03ei
+# Replace with actual vehicle ID from previous responses
+
+### 10. Update vehicle details (Admin only)
+PATCH {{baseUrl}}/vehicles/cmcgqzrjj0002uvxc6skv03ei
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "pricePerDay": 3000,
+  "isAvailable": false,
+  "description": "Comfortable sedan perfect for city driving "
+}
+
+### 11. Update vehicle availability only
+PATCH {{baseUrl}}/vehicles/cm123456789abcdef
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "isAvailable": true
+}
+
+### 12. Update vehicle location
+PATCH {{baseUrl}}/vehicles/cm123456789abcdef
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "location": "Mombasa"
+}
+
+### 13. Delete a vehicle (Admin only)
+DELETE {{baseUrl}}/vehicles/cmcgqzrjj0002uvxc6skv03ei
+Authorization: Bearer {{adminToken}}
+
+### 14. Test unauthorized access (should fail)
+POST {{baseUrl}}/vehicles
+Content-Type: application/json
+
+{
+  "make": "Honda",
+  "model": "Civic",
+  "year": 2023,
+  "category": "SEDAN"
+}
+
+### 15. Test non-admin access (should fail if user is not admin)
+POST {{baseUrl}}/vehicles
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "make": "Honda",
+  "model": "Civic",
+  "year": 2023,
+  "category": "SEDAN"
+}
+
+### 16. Test getting non-existent vehicle (should return 404)
+GET {{baseUrl}}/vehicles/non-existent-id
+
+### 17. Test updating non-existent vehicle (should return 404)
+PATCH {{baseUrl}}/vehicles/non-existent-id
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "pricePerDay": 6000
+}
+
+### 18. Test deleting non-existent vehicle (should return 404)
+DELETE {{baseUrl}}/vehicles/non-existent-id
+Authorization: Bearer {{adminToken}}
+
+### 19. Create multiple vehicles for testing
+POST {{baseUrl}}/vehicles
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "make": "Honda",
+  "model": "CR-V",
+  "year": 2023,
+  "category": "SUV",
+  "licensePlate": "XYZ-456",
+  "location": "Kisumu",
+  "pricePerDay": 7000,
+  "isAvailable": true,
+  "description": "Spacious SUV perfect for family trips",
+  "features": ["4WD", "Sunroof", "Leather Seats"],
+  "capacity": 7,
+  "fuelType": "PETROL",
+  "transmission": "AUTOMATIC"
+}
+
+###
+POST {{baseUrl}}/vehicles
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "make": "Nissan",
+  "model": "X-Trail",
+  "year": 2022,
+  "category": "SUV",
+  "licensePlate": "DEF-789",
+  "location": "Nairobi",
+  "pricePerDay": 6500,
+  "isAvailable": false,
+  "description": "Reliable SUV currently under maintenance",
+  "features": ["AWD", "Navigation", "Backup Camera"],
+  "capacity": 5,
+  "fuelType": "PETROL",
+  "transmission": "CVT"
+}
+
+### 20. Complex filter combinations
+GET {{baseUrl}}/vehicles/filter?make=Honda&category=SUV&location=Kisumu
+
+###
+GET {{baseUrl}}/vehicles/filter?isAvailable=true&location=Nairobi
+
+###
+GET {{baseUrl}}/vehicles/filter?category=SUV&isAvailable=false

@@ -1,0 +1,85 @@
+### Variables
+@baseUrl = http://localhost:3000
+@userToken = 
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoYXV3bzAwMDAxdXZkOHp5YTNydWgwIiwiZW1haWwiOiJtYXJ5a2ltZXJpYTIwQGdtYWlsLmNvbSIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImlhdCI6MTc1MTE5Nzg4MCwiZXhwIjoxNzUxMjg0MjgwfQ.Q3plLlGqzmyhDP14E-x7XAUK91A26Mi6lMQ_Dm23_d8
+
+### 1. Create a new booking (User)
+POST {{baseUrl}}/bookings
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "vehicleId": "cmcgr8d4q0002uveg0czsh5iw",
+  "startDate": "2025-07-01T10:00:00Z",
+  "endDate": "2025-07-03T10:00:00Z",
+  "totalAmount": 8000
+}
+
+### 2. Get current user's bookings
+GET {{baseUrl}}/bookings/my
+Authorization: Bearer {{userToken}}
+
+### 3. Get all bookings (Admin only)
+GET {{baseUrl}}/bookings
+Authorization: Bearer {{adminToken}}
+
+### 4. Get specific booking by ID (Admin only)
+GET {{baseUrl}}/bookings/cmcho0ten0001uvdsw3y3gk5m
+Authorization: Bearer {{adminToken}}
+
+### 5. Update a booking (Admin only)
+PATCH {{baseUrl}}/bookings/cmcho0ten0001uvdsw3y3gk5m
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "PENDING",
+  "endDate": "2025-07-04T10:00:00Z",
+  "totalAmount": 8000
+}
+
+### 6. Delete a booking (Admin only)
+DELETE {{baseUrl}}/bookings/cmchkipgb0003uv2wlg681bs3
+Authorization: Bearer {{adminToken}}
+
+### --- Error Testing ---
+
+### 7. Create booking without auth (should fail)
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+
+{
+  "vehicleId": "clzvuv5le0001hdzy9znf9xlo",
+  "startDate": "2025-07-01T10:00:00Z",
+  "endDate": "2025-07-03T10:00:00Z",
+  "totalAmount": 5000
+}
+
+### 8. Get all bookings as regular user (should fail)
+GET {{baseUrl}}/bookings
+Authorization: Bearer {{userToken}}
+
+### 9. Update booking as regular user (should fail)
+PATCH {{baseUrl}}/bookings/booking-uuid-here
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "status": "CANCELLED"
+}
+
+### 10. Delete booking as regular user (should fail)
+DELETE {{baseUrl}}/bookings/booking-uuid-here
+Authorization: Bearer {{userToken}}
+
+### 11. Create booking with invalid data (should fail)
+POST {{baseUrl}}/bookings
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "vehicleId": "",
+  "startDate": "invalid-date",
+  "endDate": "2025-07-01T10:00:00Z",
+  "totalAmount": "not-a-number"
+}
