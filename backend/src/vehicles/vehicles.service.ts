@@ -5,7 +5,7 @@ import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @Injectable()
 export class VehiclesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createVehicleDto: CreateVehicleDto) {
     return this.prisma.vehicle.create({
@@ -20,33 +20,48 @@ export class VehiclesService {
     isAvailable?: string;
   }) {
     const { category, make, location, isAvailable } = filters;
+    const now = new Date();
+
+    const where: any = {
+      ...(category && { category }),
+      ...(make && { make: { contains: make, mode: 'insensitive' } }),
+      ...(location && { location: { contains: location, mode: 'insensitive' } }),
+    };
+
+    if (isAvailable === 'true') {
+      // Filter out vehicles with active bookings overlapping current time
+      where.bookings = {
+        none: {
+          startDate: { lte: now },
+          endDate: { gte: now },
+        },
+      };
+    }
 
     return this.prisma.vehicle.findMany({
-      where: {
-        category: category as any,
-        make: make ? { contains: make, mode: 'insensitive' } : undefined,
-        location: location ? { contains: location, mode: 'insensitive' } : undefined,
-        isAvailable: isAvailable !== undefined ? isAvailable === 'true' : undefined,
-      },
+      where,
     });
   }
 
   async findOne(id: string) {
-    const vehicle = await this.prisma.vehicle.findUnique({ where: { id } });
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id },
+    });
 
-    if (!vehicle) {
-      throw new NotFoundException(`Vehicle with ID ${id} not found`);
-    }
-
+    if (!vehicle) throw new NotFoundException('Vehicle not found');
     return vehicle;
   }
+
 
   async update(id: string, updateVehicleDto: UpdateVehicleDto) {
     await this.findOne(id); // ensures vehicle exists
 
     return this.prisma.vehicle.update({
       where: { id },
-      data: updateVehicleDto,
+      data: {
+        ...updateVehicleDto,
+        imageUrl: updateVehicleDto.imageUrl,
+      },
     });
   }
 

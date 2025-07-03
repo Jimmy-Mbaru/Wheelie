@@ -33,9 +33,13 @@ export class UsersService {
 
     return await this.prisma.user.create({
       data: {
-        ...createUserDto,
+        email: createUserDto.email,
         password: hashedPassword,
         role: createUserDto.role || UserRole.USER,
+        firstName: createUserDto.firstName,
+        lastName: createUserDto.lastName,
+        phone: createUserDto.phone,
+        avatarUrl: createUserDto.avatarUrl,
       },
     });
   }
@@ -84,7 +88,10 @@ export class UsersService {
 
     return await this.prisma.user.update({
       where: { id },
-      data: updateUserDto,
+      data: {
+        ...updateUserDto,
+        avatarUrl: updateUserDto.avatarUrl,
+      },
     });
   }
 

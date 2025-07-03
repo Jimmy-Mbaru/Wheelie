@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Req,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,13 +18,23 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from 'generated/prisma';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiBody,
+} from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @ApiTags('Users')
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly cloudinaryService: CloudinaryService
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -39,6 +51,13 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users (Admin/Super Admin only)' })
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get profile of current logged-in user' })
+  getProfile(@Req() req) {
+    return this.usersService.getProfile(req.user.sub);
   }
 
   @Get(':id')
@@ -69,18 +88,31 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @Get('profile')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get profile of current logged-in user' })
-  getProfile(@Req() req) {
-    return this.usersService.getProfile(req.user.sub);
-  }
+  
 
   @Patch('profile')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update profile of current logged-in user' })
   updateProfile(@Req() req, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateProfile(req.user.sub, updateUserDto);
+  }
+
+  @Post('upload-profile')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload profile picture for logged-in user' })
+  async uploadProfileImage(@UploadedFile() file: Express.Multer.File, @Req() req) {
+    const userId = req.user.sub;
+
+    const result = await this.cloudinaryService.uploadImage(file, {
+      folder: 'profile_pics',
+      public_id: `user-${userId}`,
+      overwrite: true,
+    });
+
+    await this.usersService.updateProfile(userId, { avatarUrl: result.secure_url });
+
+    return { message: 'Profile image uploaded successfully', url: result.secure_url };
   }
 
   @UseGuards(JwtAuthGuard)

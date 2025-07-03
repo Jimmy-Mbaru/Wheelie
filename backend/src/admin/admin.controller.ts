@@ -11,14 +11,14 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Get('dashboard')
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN) // <-- move here!
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiOperation({ summary: 'Get dashboard statistics (Admin/Super Admin)' })
-  getDashboardStats(@Req() req) {
+  async getDashboardStats(@Req() req) {
     console.log('ADMIN ACCESS:', req.user); // Debug log
-    return this.adminService.getDashboardStats();
+    return await this.adminService.getDashboardStats();
   }
 }
 

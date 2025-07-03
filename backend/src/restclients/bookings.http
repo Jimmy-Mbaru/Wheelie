@@ -1,15 +1,14 @@
 ### Variables
 @baseUrl = http://localhost:3000
 @userToken = 
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoYXV3bzAwMDAxdXZkOHp5YTNydWgwIiwiZW1haWwiOiJtYXJ5a2ltZXJpYTIwQGdtYWlsLmNvbSIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImlhdCI6MTc1MTE5Nzg4MCwiZXhwIjoxNzUxMjg0MjgwfQ.Q3plLlGqzmyhDP14E-x7XAUK91A26Mi6lMQ_Dm23_d8
-
+@adminToken = 
 ### 1. Create a new booking (User)
 POST {{baseUrl}}/bookings
 Authorization: Bearer {{userToken}}
 Content-Type: application/json
 
 {
-  "vehicleId": "cmcgr8d4q0002uveg0czsh5iw",
+  "vehicleId": "cmcl4yq690002uvjwkvhjx053",
   "startDate": "2025-07-01T10:00:00Z",
   "endDate": "2025-07-03T10:00:00Z",
   "totalAmount": 8000

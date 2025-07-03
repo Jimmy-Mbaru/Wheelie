@@ -52,6 +52,15 @@ export class AuthService {
   }) {
     const newUser = await this.usersService.create(createAuthDto);
 
+    // Create JWT payload
+    const payload: JwtPayload = {
+      sub: newUser.id,
+      email: newUser.email,
+      role: newUser.role,
+    };
+
+    // Generate access token
+    const token = this.jwtService.sign(payload);
 
     // Send Welcome Email
     await this.mailerService.sendWelcomeEmail(
@@ -59,8 +68,10 @@ export class AuthService {
       newUser.firstName!
     );
 
-
-    return newUser;
+    return {
+      access_token: token,
+      user: newUser,
+    };
   }
 
   async forgotPassword(email: string) {
@@ -84,7 +95,6 @@ export class AuthService {
       user.email,
       token
     );
-
 
     return { message: 'Reset link sent to your email' };
   }
@@ -111,5 +121,4 @@ export class AuthService {
 
     return { message: 'Password reset successful' };
   }
-
 }

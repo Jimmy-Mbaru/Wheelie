@@ -13,7 +13,7 @@ export class BookingsService {
   constructor(
     private prisma: PrismaService,
     private readonly mailerService: MailerService,
-  ) { }
+  ) {}
 
   async create(dto: CreateBookingDto, userId: string) {
     // 1. Check for conflicting bookings
@@ -46,7 +46,13 @@ export class BookingsService {
       },
     });
 
-    // 3. Send confirmation email
+    // 3. Mark vehicle as unavailable
+    await this.prisma.vehicle.update({
+      where: { id: dto.vehicleId },
+      data: { isAvailable: false },
+    });
+
+    // 4. Send confirmation email
     await this.mailerService.sendBookingConfirmationEmail(
       booking.user.email,
       booking.user.firstName,

@@ -15,7 +15,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-@ApiTags('Auth') // Group under "Auth" in Swagger UI
+@ApiTags('Auth') 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

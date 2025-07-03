@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
@@ -16,19 +18,23 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from 'generated/prisma';
-
 import {
   ApiTags,
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @ApiTags('Vehicles')
 @ApiBearerAuth()
 @Controller('vehicles')
 export class VehiclesController {
-  constructor(private readonly vehiclesService: VehiclesService) {}
+  constructor(
+    private readonly vehiclesService: VehiclesService,
+    private readonly cloudinaryService: CloudinaryService
+  ) { }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -37,7 +43,6 @@ export class VehiclesController {
   create(@Body() createVehicleDto: CreateVehicleDto) {
     return this.vehiclesService.create(createVehicleDto);
   }
-
 
 
   @Get('filter')
@@ -56,10 +61,13 @@ export class VehiclesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get vehicle by ID' })
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get a specific vehicle by ID' })
   findOne(@Param('id') id: string) {
     return this.vehiclesService.findOne(id);
   }
+
+
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
