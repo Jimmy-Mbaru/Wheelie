@@ -11,7 +11,7 @@ import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // Ensure env vars are loaded globally
+    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     UsersModule,
     VehiclesModule,

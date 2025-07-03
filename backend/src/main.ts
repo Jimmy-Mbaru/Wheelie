@@ -5,6 +5,9 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Set global API prefix
+  app.setGlobalPrefix('api');
+
   // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Car Rental API')
@@ -23,7 +26,13 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); 
+  SwaggerModule.setup('api', app, document);
+
+  // CORS for Angular frontend
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }

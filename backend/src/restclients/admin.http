@@ -1,0 +1,15 @@
+@baseUrl = http://localhost:3000
+@adminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoYXV3bzAwMDAxdXZkOHp5YTNydWgwIiwiZW1haWwiOiJtYXJ5a2ltZXJpYTIwQGdtYWlsLmNvbSIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImlhdCI6MTc1MTQxMzc5MiwiZXhwIjoxNzUxNTAwMTkyfQ.NNHa6flcsM1BC1xOBJtpspBKEqHUT4ne5DtXf9LA1fo"
+### Get Admin Dashboard Stats (Admin or Super Admin)
+GET http://localhost:3000/admin/dashboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoYXV3bzAwMDAxdXZkOHp5YTNydWgwIiwiZW1haWwiOiJtYXJ5a2ltZXJpYTIwQGdtYWlsLmNvbSIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImlhdCI6MTc1MTM4OTkyMCwiZXhwIjoxNzUxNDc2MzIwfQ.Tz1aa50vXcK1Qtuee--AN5mSpzAQUEQ_a8lRbcLXC9k
+Content-Type: application/json
+
+
+//What's rendered on the admin dash
+#   "totalUsers": 5,
+#   "totalBookings": 2,
+#   "activeVehicles": 4,
+#   "totalRevenue": 0,
+#   "topVehicles":
+#   "recent bookings":

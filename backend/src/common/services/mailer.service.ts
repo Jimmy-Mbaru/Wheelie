@@ -10,7 +10,7 @@ export class MailerService {
       await this.mailerService.sendMail({
         to,
         subject: 'Welcome to Car Rental!',
-        html: `<h3>Hello ${name},</h3><p>Welcome to our platform. We’re excited to have you on board 🚗</p>`,
+        html: `<h3>Hello ${name},</h3><p>Welcome to our platform. We’re excited to have you on Wheelzie 🚗</p>`,
       });
     } catch (error) {
       throw new InternalServerErrorException('Failed to send welcome email');

@@ -1,7 +1,7 @@
 ### Variables
 @baseUrl = http://localhost:3000
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoY2Q2dGswMDAydXZvOGRjZDE1dDVlIiwiZW1haWwiOiJhZGFtc2pveTQwOUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1MTIwMDcwNywiZXhwIjoxNzUxMjg3MTA3fQ.nHVQ_TSgAlyA7J18CDRHo8PPlfmLzqNB6CPdhSWu3PQ
-@adminToken = 
+@authToken = 
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWNoYXV3bzAwMDAxdXZkOHp5YTNydWgwIiwiZW1haWwiOiJtYXJ5a2ltZXJpYTIwQGdtYWlsLmNvbSIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImlhdCI6MTc1MTQxMzc5MiwiZXhwIjoxNzUxNTAwMTkyfQ.NNHa6flcsM1BC1xOBJtpspBKEqHUT4ne5DtXf9LA1fo
 
 ### 1. Create a new vehicle (Admin only)
 POST {{baseUrl}}/vehicles
@@ -10,11 +10,11 @@ Content-Type: application/json
 
 {
   "make": "Porsche",
-  "model": "Cayene",
+  "model": "Macan",
   "year": 2020,
   "category": "SUV",
   "seats" : 5,
-  "licensePlate": "DDG-069",
+  "licensePlate": "TVS-069",
   "location": "Naivasha",
   "pricePerDay": 5000,
   "isAvailable": true,
