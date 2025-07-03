@@ -1,0 +1,13 @@
+<div class="bg-white p-4 rounded-xl shadow">
+  <h2 class="text-md font-semibold mb-4 text-gray-700">Recent Bookings</h2>
+  <div *ngIf="bookings.length; else noBookings">
+    <div *ngFor="let booking of bookings" class="border-b py-2 text-sm">
+      <p><strong>Car:</strong> {{ booking.vehicle?.make }} - {{ booking.vehicle?.model }}</p>
+      <p><strong>User:</strong> {{ booking.user?.firstName }} {{ booking.user?.lastName }}</p>
+      <p><strong>Date:</strong> {{ booking.startDate | date:'mediumDate' }}</p>
+    </div>
+  </div>
+  <ng-template #noBookings>
+    <p class="text-gray-400 text-sm">No recent bookings</p>
+  </ng-template>
+</div>

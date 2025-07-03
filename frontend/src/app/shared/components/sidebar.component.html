@@ -1,0 +1,34 @@
+<aside class="w-64 h-full bg-white shadow-md px-4 py-6 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+          <span class="text-white font-bold text-sm">W</span>
+        </div>
+      </div>
+      <span class="ml-2 text-xl font-semibold text-gray-900">Wheelzie</span>
+    </div>
+
+    <nav class="space-y-2">
+      <a routerLink="/admin/home" class="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">
+        Dashboard
+      </a>
+      <a routerLink="/dashboard/admin/vehicles"
+        class="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">
+        Vehicles
+      </a>
+      <a routerLink="/dashboard/admin/bookings"
+        class="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">
+        Bookings
+      </a>
+      <a routerLink="/dashboard/admin/users"
+        class="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">
+        Users
+      </a>
+    </nav>
+  </div>
+
+  <div>
+    <button class="text-sm text-red-500 hover:underline">Logout</button>
+  </div>
+</aside>

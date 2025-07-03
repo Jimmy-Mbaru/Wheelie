@@ -1,0 +1,178 @@
+<!-- Admin dash -->
+<div class="flex h-screen overflow-hidden">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main content -->
+  <div class="flex-1 flex flex-col">
+    <app-topbar></app-topbar>
+
+    <main class="p-6 bg-gray-50 flex-1 overflow-y-auto">
+      <!-- Router outlet for child components -->
+      <router-outlet></router-outlet>
+      
+      <!-- Default dashboard content when no child route is active -->
+      <div *ngIf="showDashboardContent">
+        <!-- Header Section -->
+        <div class="mb-8">
+          <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p class="text-gray-600 mt-1">Monitor your vehicle rental business easily</p>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex justify-center items-center h-64">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+          <div class="flex">
+            <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.346 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">Error loading dashboard</h3>
+              <p class="text-sm text-red-700 mt-1">{{error}}</p>
+              <button (click)="loadData()" 
+                      class="mt-2 text-sm bg-red-100 text-red-800 px-3 py-1 rounded hover:bg-red-200 transition-colors">
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div *ngIf="!loading">
+          <!-- Key Metrics Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <app-stat-card 
+              *ngFor="let stat of stats" 
+              [label]="stat.label" 
+              [value]="stat.value" 
+              [color]="stat.color">
+            </app-stat-card>
+          </div>
+
+          <!-- Top Vehicles Section -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Top Performing Vehicles</h2>
+                  <p class="text-sm text-gray-600">Most booked vehicles in your fleet</p>
+                </div>
+                <div class="flex items-center text-sm text-gray-500">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                  </svg>
+                  Performance
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-6">
+              <!-- Empty State -->
+              <div *ngIf="topVehicles.length === 0" class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No vehicles booked yet</h3>
+                <p class="mt-1 text-sm text-gray-500">Start by adding some vehicles to your fleet</p>
+              </div>
+
+              <!-- Vehicles Grid -->
+              <div *ngIf="topVehicles.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                <div *ngFor="let vehicle of topVehicles; trackBy: trackVehicle" 
+                     class="group border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-200">
+                  
+                  <!-- Vehicle Image -->
+                  <div class="aspect-w-16 aspect-h-9 bg-gray-100 relative overflow-hidden">
+                    <img *ngIf="vehicle.imageUrl" 
+                         [src]="vehicle.imageUrl" 
+                         [alt]="vehicle.make + ' ' + vehicle.model"
+                         class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-200"
+                         (error)="onImageError($event)">
+                    
+                    <!-- Image Placeholder -->
+                    <div *ngIf="!vehicle.imageUrl" 
+                         class="w-full h-32 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 15l-7-7-7 7"></path>
+                      </svg>
+                    </div>
+
+                    <!-- Booking Badge -->
+                    <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                      {{vehicle.bookings}} bookings
+                    </div>
+                  </div>
+
+                  <!-- Vehicle Details -->
+                  <div class="p-4">
+                    <h3 class="font-semibold text-gray-900 text-sm truncate">
+                      {{vehicle.make}} {{vehicle.model}}
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-1">{{vehicle.year}}</p>
+                    
+                    <!-- Performance Indicator -->
+                    <div class="mt-3 flex items-center justify-between">
+                      <span class="text-xs text-gray-600">Performance</span>
+                      <div class="flex items-center">
+                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                          <div class="bg-blue-600 h-2 rounded-full" 
+                               [style.width.%]="Math.min((vehicle.bookings / (topVehicles[0]?.bookings || 1)) * 100, 100)">
+                          </div>
+                        </div>
+                        <span class="text-xs font-medium text-gray-900">
+                          {{Math.round((vehicle.bookings / (topVehicles[0]?.bookings || 1)) * 100)}}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vehicle Management Section -->
+          <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 mb-8 text-white">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold">Expand Your Fleet</h3>
+                  <p class="text-blue-100 text-sm">Add new vehicles to increase your rental capacity</p>
+                </div>
+              </div>
+              
+              <div class="flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                  <div class="text-2xl font-bold">{{getActiveVehiclesCount()}}</div>
+                  <div class="text-blue-100 text-xs">Active Vehicles</div>
+                </div>
+                
+                <button 
+                  (click)="navigateToAddVehicle()"
+                  class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-200 flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  <span>Add to Fleet</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Bookings -->
+          <div class="mt-8">
+            <app-recent-bookings [bookings]="bookings"></app-recent-bookings>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

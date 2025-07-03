@@ -1,0 +1,85 @@
+<div class="p-4">
+  <h2 class="text-xl font-bold mb-4">My Bookings</h2>
+  
+  <!-- Current Booking Section -->
+  <section *ngIf="currentBooking" class="mb-6">
+    <h3 class="text-lg font-semibold mb-2">Current Booking</h3>
+    <div class="border p-4 rounded-xl shadow mb-4 bg-blue-50">
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <div class="font-semibold text-lg">{{ getVehicleName(currentBooking.vehicle) }}</div>
+          <div class="text-sm text-gray-600">{{ currentBooking.vehicle?.location || 'Location not specified' }}</div>
+        </div>
+        <div class="text-right">
+          <div class="font-semibold text-lg">{{ formatCurrency(currentBooking.totalAmount) }}</div>
+          <div class="text-sm" [class]="getStatusColor(currentBooking.status)">
+            {{ currentBooking.status }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-sm text-gray-600 mb-2">
+        <strong>Duration:</strong> {{ currentBooking.startDate | date: 'short' }} → {{ currentBooking.endDate | date: 'short' }}
+      </div>
+      
+      <div class="text-sm text-gray-600 mb-2">
+        <strong>Booking Type:</strong> {{ currentBooking.type }}
+      </div>
+      
+      <div class="text-sm text-gray-600" *ngIf="currentBooking.vehicle?.description">
+        <strong>Vehicle Details:</strong> {{ currentBooking.vehicle.description }}
+      </div>
+      
+      <div class="text-xs text-gray-500 mt-2">
+        Booked on: {{ currentBooking.createdAt | date: 'medium' }}
+      </div>
+    </div>
+  </section>
+  
+  <!-- No Current Booking Message -->
+  <section *ngIf="!currentBooking" class="mb-6">
+    <h3 class="text-lg font-semibold mb-2">Current Booking</h3>
+    <div class="border p-4 rounded-xl shadow mb-4 bg-gray-50">
+      <p class="text-gray-500 text-center">No active bookings at the moment.</p>
+    </div>
+  </section>
+  
+  <!-- Booking History Section -->
+  <section>
+    <h3 class="text-lg font-semibold mb-2">Booking History</h3>
+    <ng-container *ngIf="bookingHistory.length; else noHistory">
+      <div *ngFor="let booking of bookingHistory" class="border p-4 rounded-xl shadow mb-4">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="font-semibold">{{ getVehicleName(booking.vehicle) }}</div>
+            <div class="text-sm text-gray-600">{{ booking.vehicle?.location || 'Location not specified' }}</div>
+          </div>
+          <div class="text-right">
+            <div class="font-semibold">{{ formatCurrency(booking.totalAmount) }}</div>
+            <div class="text-sm" [class]="getStatusColor(booking.status)">
+              {{ booking.status }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-sm text-gray-600 mb-2">
+          <strong>Duration:</strong> {{ booking.startDate | date: 'short' }} → {{ booking.endDate | date: 'short' }}
+        </div>
+        
+        <div class="text-sm text-gray-600 mb-2">
+          <strong>Booking Type:</strong> {{ booking.type }}
+        </div>
+        
+        <div class="text-xs text-gray-500">
+          Booked on: {{ booking.createdAt | date: 'medium' }}
+        </div>
+      </div>
+    </ng-container>
+    
+    <ng-template #noHistory>
+      <div class="border p-4 rounded-xl shadow bg-gray-50">
+        <p class="text-gray-500 text-center">No past bookings found.</p>
+      </div>
+    </ng-template>
+  </section>
+</div>

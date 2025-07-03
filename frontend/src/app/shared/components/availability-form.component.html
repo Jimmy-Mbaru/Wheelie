@@ -1,0 +1,25 @@
+<form class="bg-white p-4 rounded-xl shadow space-y-4">
+  <h3 class="text-md font-semibold text-gray-700">Filter Availability</h3>
+
+  <div class="flex flex-col gap-2">
+    <label class="text-sm text-gray-600">Vehicle Type</label>
+    <select class="p-2 border rounded">
+      <option value="">All</option>
+      <option value="SUV">SUV</option>
+      <option value="Sedan">Sedan</option>
+    </select>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label class="text-sm text-gray-600">Availability</label>
+    <select class="p-2 border rounded">
+      <option value="">All</option>
+      <option value="true">Available</option>
+      <option value="false">Not Available</option>
+    </select>
+  </div>
+
+  <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+    Apply Filters
+  </button>
+</form>

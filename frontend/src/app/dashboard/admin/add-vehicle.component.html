@@ -1,0 +1,29 @@
+<div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow">
+  <h2 class="text-xl font-semibold mb-4">Add New Vehicle</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submitForm()" class="space-y-4">
+    <input formControlName="make" type="text" placeholder="Make" class="w-full border p-2 rounded" />
+    <input formControlName="model" type="text" placeholder="Model" class="w-full border p-2 rounded" />
+    <input formControlName="year" type="number" placeholder="Year" class="w-full border p-2 rounded" />
+    <input formControlName="category" type="text" placeholder="Category" class="w-full border p-2 rounded" />
+    <input formControlName="location" type="text" placeholder="Location" class="w-full border p-2 rounded" />
+    <input formControlName="pricePerDay" type="number" placeholder="Price Per Day" class="w-full border p-2 rounded" />
+
+    <div>
+      <label class="block mb-1">Image</label>
+      <input type="file" (change)="onFileChange($event)" />
+      <img *ngIf="previewUrl" [src]="previewUrl" alt="Preview" class="w-40 mt-2 rounded border" />
+    </div>
+
+    <div>
+      <label>
+        <input type="checkbox" formControlName="isAvailable" />
+        Available
+      </label>
+    </div>
+
+    <button type="submit" [disabled]="uploading || form.invalid" class="bg-blue-600 text-white px-4 py-2 rounded">
+      {{ uploading ? 'Uploading...' : 'Add Vehicle' }}
+    </button>
+  </form>
+</div>
